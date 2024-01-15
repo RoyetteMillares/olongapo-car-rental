@@ -12,8 +12,8 @@ const font = Montserrat({
 })
 
 export const Navbar = () => {
-    const { isSignedIn } = useAuth()
-    const { user } = useUser()
+    // const { isSignedIn } = useAuth()
+    // const { user } = useUser()
     return (
         <nav className="flex items-center justify-between p-4 mx-auto max-w-screen-xl h-full w-full">
             <Link href="/" className="flex items-center">
