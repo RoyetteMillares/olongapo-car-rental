@@ -9,7 +9,7 @@ const inter = Outfit({ subsets: ['latin'], weight: ["500"] })
 
 export const metadata: Metadata = {
   title: 'Car and Motorcycle For Rent',
-  description: 'Best Car Rental in Olongapo',
+  description: 'Best Car and Motorcycle Rental in Olongapo',
 }
 
 export default function RootLayout({
