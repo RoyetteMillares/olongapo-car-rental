@@ -59,8 +59,6 @@ function Form({ car }: any) {
         updateDropOffDateTime("custom");
     };
 
-    // ... (existing code)
-
     const updateDropOffDateTime = (duration: number | "custom") => {
         if (!formValue.pickUpDate || !formValue.pickUpTime) return;
 
@@ -106,7 +104,7 @@ function Form({ car }: any) {
                         <option disabled>Pick Up Location?</option>
                         {storeLocation &&
                             storeLocation.map((loc: any, index: number) => (
-                                <option key={index}>{loc.address}</option>
+                                <option key={index} value={loc.address}>{loc.address}</option>
                             ))}
                     </select>
                 </div>
