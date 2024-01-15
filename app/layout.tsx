@@ -8,7 +8,7 @@ import { ToasterProvider } from "@/components/toaster-provider";
 const inter = Outfit({ subsets: ['latin'], weight: ["500"] })
 
 export const metadata: Metadata = {
-  title: 'Car Rent',
+  title: 'Car and Motorcycle For Rent',
   description: 'Best Car Rental in Olongapo',
 }
 
