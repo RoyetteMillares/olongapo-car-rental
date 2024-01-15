@@ -8,7 +8,7 @@ export default function SearchInput({ carsFilter, setCarsList }: any) {
         const filteredList = carsFilter.filter((item: any) =>
             item.carBrand.toLowerCase().includes(inputValue)
         );
-        console.log(filteredList, 'yet')
+        // console.log(filteredList, 'yet')
         setCarsList(filteredList);
         setSearchInput(inputValue);
     };

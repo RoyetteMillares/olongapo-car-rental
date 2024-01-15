@@ -37,7 +37,7 @@ export const Navbar = () => {
                 >
 
                 </Link> */}
-                {isSignedIn ? (<>
+                {/* {isSignedIn ? (<>
                     {user?.imageUrl && (
                         <Image
                             src={user.imageUrl}
@@ -50,10 +50,11 @@ export const Navbar = () => {
                 </>) :
                     (
                         <>
-                            <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white">
-                                Book Now!
-                            </button>
-                        </>)}
+                            
+                        </>)} */}
+                <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white">
+                    Book Now!
+                </button>
             </div>
         </nav>
     )

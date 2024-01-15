@@ -3,7 +3,6 @@ import CarsCard from '../Home/CarsCard'
 import Form from './Form'
 
 export default function BookingModal({ car }: any) {
-    console.log(car, 'idd')
     return (
         <div>
             <form method='dialog' className='modal-box w-full lg:max-w-[60rem]'>
