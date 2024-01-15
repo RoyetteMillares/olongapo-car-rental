@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.hero__title {
+  @apply 2xl:text-[72px] sm:text-[64px] text-[50px] font-extrabold;
+}
+
+.hero__subtitle {
+  @apply text-[27px] text-black-100 font-light mt-5;
+}
+.hero__image-container {
+  @apply xl:flex-[1.5] flex justify-end items-end w-full xl:h-screen;
+}
+
+.hero__image {
+  @apply relative xl:w-full w-[90%] xl:h-full h-[590px] z-0;
+}
+
+.hero__image-overlay {
+  @apply absolute xl:-top-24 xl:-right-[15%] -right-[45%] bg-hero-bg bg-repeat-round -z-10 w-full xl:h-screen h-[550px] overflow-hidden;
+  transform: rotate(272deg);
+}
+
+.car-card {
+  @apply flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md hover:border-[1px] cursor-pointer duration-75 hover:border-blue-500 rounded-3xl;
+}
+
+.car-card__content {
+  @apply w-full flex justify-between items-start gap-2;
+}
+
+.car-card__content-title {
+  @apply text-[22px] leading-[26px] font-bold capitalize;
+}
+
+.car-card__price {
+  @apply flex mt-6 text-[32px] leading-[38px] font-extrabold;
+}
+
+.car-card__price-dollar {
+  @apply self-start text-[14px] leading-[17px] font-semibold;
+}
+
+.car-card__price-day {
+  @apply self-end text-[14px] leading-[17px] font-medium;
+}
+
+.car-card__image {
+  @apply relative w-full h-40 my-3 object-contain;
+}
+
+.car-card__icon-container {
+  @apply flex group-hover:invisible w-full justify-between text-grey;
+}
+
+.car-card__icon {
+  @apply flex flex-col justify-center items-center gap-2;
+}
+
+.car-card__icon-text {
+  @apply text-[14px] leading-[17px];
+}
+
+.car-card__btn-container {
+  @apply hidden group-hover:flex absolute bottom-0 w-full z-10;
+}
+
+/* END: Car Card styles */
