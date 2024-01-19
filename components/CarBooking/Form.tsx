@@ -16,7 +16,7 @@ function Form({ car }: any) {
         carId: "",
     });
     const [bookingDuration, setBookingDuration] = useState<number | "custom">(1); // Default to 1 day
-    const [customDuration, setCustomDuration] = useState<number | null>(null);
+    const [customDuration, setCustomDuration] = useState<number | null>(0);
 
     useEffect(() => {
         getStoreLocations();
@@ -43,11 +43,18 @@ function Form({ car }: any) {
 
     const handleDurationChange = (event: any) => {
         const selectedDuration = event.target.value;
-        setBookingDuration(selectedDuration);
 
-        // If "Custom" is selected, set customDuration to null initially
+        // If "Custom" is selected, set customDuration to 0 initially
         if (selectedDuration === "custom") {
-            setCustomDuration(null);
+            setCustomDuration(0);
+        }
+
+        // Check if selected duration is a number
+        const isNumericDuration = !isNaN(selectedDuration) && !isNaN(parseFloat(selectedDuration));
+        if (isNumericDuration) {
+            setBookingDuration(parseFloat(selectedDuration));
+        } else {
+            setBookingDuration(selectedDuration);
         }
 
         updateDropOffDateTime(selectedDuration);
@@ -133,28 +140,6 @@ function Form({ car }: any) {
                         />
                     </div>
                 </div>
-                <div className="flex flex-col lg:flex-row gap-5">
-                    <div className="w-full">
-                        <label className="text-gray-800">Drop Off Date</label>
-                        <input
-                            className="input input-bordered w-full max-w-lg"
-                            name="dropOffDate"
-                            type="date"
-                            value={formValue.dropOffDate}
-                            readOnly
-                        />
-                    </div>
-                    <div className="w-full">
-                        <label className="text-gray-800">Drop Off Time</label>
-                        <input
-                            className="input input-bordered w-full max-w-lg"
-                            name="dropOffTime"
-                            type="time"
-                            value={formValue.dropOffTime}
-                            readOnly
-                        />
-                    </div>
-                </div>
                 <div className="w-full">
                     <label className="text-gray-800 text-xl">Booking Duration(Days)</label>
                     <select
@@ -180,6 +165,29 @@ function Form({ car }: any) {
                         />
                     )}
                 </div>
+                <div className="flex flex-col lg:flex-row gap-5">
+                    <div className="w-full">
+                        <label className="text-gray-800">Drop Off Date</label>
+                        <input
+                            className="input input-bordered w-full max-w-lg"
+                            name="dropOffDate"
+                            type="date"
+                            value={formValue.dropOffDate}
+                            readOnly
+                        />
+                    </div>
+                    <div className="w-full">
+                        <label className="text-gray-800">Drop Off Time</label>
+                        <input
+                            className="input input-bordered w-full max-w-lg"
+                            name="dropOffTime"
+                            type="time"
+                            value={formValue.dropOffTime}
+                            readOnly
+                        />
+                    </div>
+                </div>
+
             </div>
             <div className="w-full">
                 <label className="text-gray-800">Contact Number</label>
