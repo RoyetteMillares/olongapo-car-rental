@@ -11,7 +11,7 @@ export default function BookingModal({ car }: any) {
                 </div>
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 md:p-5'>
                     <div>
-                        <CarsCard car={car} />
+                        <CarsCard car={car} hiddenRent={true} />
                     </div>
                     <div>
                         <Form car={car} />

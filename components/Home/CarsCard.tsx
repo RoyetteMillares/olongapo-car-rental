@@ -31,7 +31,7 @@ export default function CarsCard(props: any) {
                 </div>
 
                 <div className='relative flex w-full mt-2'>
-                    <div className='flex group-hover:invisible w-full justify-between text-grey'>
+                    <div className={`${props.hiddenRent ? "flex group-hover:visible w-full justify-between text-grey" : "flex group-hover:invisible w-full justify-between text-grey"}`}>
                         <div className='flex flex-col justify-center items-center gap-2'>
                             <PiSteeringWheelBold />
                             <p className='text-[14px] leading-[17px]'>
@@ -47,7 +47,7 @@ export default function CarsCard(props: any) {
                             <p className="car-card__icon-text">{car.carAvg} MPG</p>
                         </div>
                     </div>
-                    <div className="car-card__btn-container">
+                    <div className={`${props.hiddenRent ? "hidden" : "hidden group-hover:flex absolute bottom-0 w-full z-10"}`}>
                         <Button
                             title='Rent Now'
                             containerStyles='w-full rounded-full bg-primary-blue h-12 flex justify-center items-center p-4'

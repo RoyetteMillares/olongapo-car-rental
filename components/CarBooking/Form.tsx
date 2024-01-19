@@ -119,6 +119,7 @@ function Form({ car }: any) {
                             type="date"
                             placeholder="Click Here"
                             onChange={handleonChange}
+                            min={new Date().toISOString().split('T')[0]}
                         />
                     </div>
                     <div className="w-full">
