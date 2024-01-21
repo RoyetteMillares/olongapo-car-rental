@@ -3,7 +3,7 @@ import { Outfit } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from "@clerk/nextjs";
 import { ToasterProvider } from "@/components/toaster-provider";
-
+import FacebookChat from '@/components/fb-chat-plugin';
 
 const inter = Outfit({ subsets: ['latin'], weight: ["500"] })
 
@@ -22,6 +22,7 @@ export default function RootLayout({
     //     </ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
+        <FacebookChat />
         {children}
         <ToasterProvider />
       </body>
