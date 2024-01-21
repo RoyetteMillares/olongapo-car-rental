@@ -9,17 +9,14 @@
 }
 
 .hero__image-container {
-  @apply xl:flex-[1.5] flex justify-end items-end w-full xl:h-[80vh] bg-blue-500 rounded-md;
+  @apply xl:flex-[1.5] h-[250px] md:h-[50vh] flex justify-center items-center w-full xl:h-[70vh] bg-blue-500 rounded-md;
 }
 
 .hero__image {
-  @apply relative xl:w-full w-[90%] xl:h-full h-[590px] z-0;
+  @apply relative h-[200px] xl:w-full w-[90%] xl:h-[500px] z-0;
 }
 
-.hero__image-overlay {
-  @apply absolute xl:-top-24 xl:-right-[15%] -right-[45%] bg-hero-bg bg-repeat-round -z-10 w-full xl:h-screen h-[550px] overflow-hidden;
-  transform: rotate(272deg);
-}
+
 
 .car-card {
   @apply flex flex-col p-6 justify-center items-start text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md hover:border-[1px] cursor-pointer duration-75 hover:border-blue-500 rounded-3xl;
