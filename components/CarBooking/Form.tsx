@@ -7,7 +7,7 @@ function Form({ car }: any) {
     const [storeLocation, setStoreLocation] = useState<any>([]);
     const [formValue, setFormValue] = useState({
         userName: "",
-        location: "",
+        location: "SMCentral",
         pickUpDate: "",
         dropOffDate: "",
         pickUpTime: "",
@@ -89,7 +89,6 @@ function Form({ car }: any) {
             dropOffTime,
         });
     };
-    // ... (remaining code)
 
 
     const handleonSubmit = async () => {
@@ -111,7 +110,7 @@ function Form({ car }: any) {
                         <option disabled>Pick Up Location?</option>
                         {storeLocation &&
                             storeLocation.map((loc: any, index: number) => (
-                                <option key={index} value={loc.address}>{loc.address}</option>
+                                <option key={index} value={loc.address}>{loc.address.replace('SM', 'SM ')}</option>
                             ))}
                     </select>
                 </div>
@@ -127,6 +126,7 @@ function Form({ car }: any) {
                             placeholder="Click Here"
                             onChange={handleonChange}
                             min={new Date().toISOString().split('T')[0]}
+
                         />
                     </div>
                     <div className="w-full">
@@ -137,6 +137,7 @@ function Form({ car }: any) {
                             type="time"
                             placeholder="Click Here"
                             onChange={handleonChange}
+
                         />
                     </div>
                 </div>
@@ -147,6 +148,7 @@ function Form({ car }: any) {
                         value={bookingDuration}
                         onChange={handleDurationChange}
                         name="bookingDuration"
+
                     >
                         <option value="1">1 day</option>
                         <option value="2">2 days</option>
@@ -197,6 +199,7 @@ function Form({ car }: any) {
                     type="number"
                     placeholder="Type your contact number here"
                     onChange={handleonChange}
+
                 />
             </div>
             <div className="modal-action">

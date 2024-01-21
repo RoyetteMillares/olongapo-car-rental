@@ -23,6 +23,7 @@ export default function Hero() {
                         <div className="hero__image-overlay" />
                     </div>
                 </div>
+                {/* <div className="newhero relative w-full min-h-[50vh]"></div> */}
             </div>
         </section>
     )

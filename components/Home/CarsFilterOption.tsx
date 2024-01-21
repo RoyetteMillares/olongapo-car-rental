@@ -20,7 +20,7 @@ function CarsFilterOption({ carsFilter, setBrand, orderCarList }: any) {
     return (
         <section className="mt-10 flex justify-between items-center">
             <div>
-                <h2 className="hero__subtitle">Cars Catalog</h2>
+                <h2 className="hero__subtitle">Cars and Motorcycle Catalog </h2>
                 <h3>Explore Cars you might like</h3>
             </div>
             <div className="flex gap-2 items-center">
