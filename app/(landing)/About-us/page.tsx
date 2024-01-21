@@ -1,4 +1,11 @@
 import React from 'react'
+import type { Metadata } from 'next'
+
+
+export const metadata: Metadata = {
+    title: 'About Us',
+    description: 'Why we are the Best Car and Motorcycle Rental in Olongapo',
+}
 
 const AboutUs = () => {
     return (

@@ -1,5 +1,6 @@
 
 
+
 export const calculateCarRent = (city_mpg: number, year: number) => {
     const basePricePerDay = 50; // Base rental price per day in dollars
     const mileageFactor = 0.1; // Additional rate per mile driven
@@ -40,3 +41,19 @@ export const deleteSearchParams = (type: string) => {
 
     return newPathname;
 };
+
+
+
+function useScrollToBottom() {
+    const handleScrollToBottom = () => {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
+    };
+
+    // Call the function here or pass it as a prop to other components
+    handleScrollToBottom()
+}
+
+export default useScrollToBottom

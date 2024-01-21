@@ -1,19 +1,26 @@
 "use client"
-
+import React, { useEffect } from "react"
 import { Montserrat } from "next/font/google"
 import Image from "next/image"
 import Link from "next/link"
 import { useAuth } from "@clerk/nextjs"
 import { useUser } from "@clerk/nextjs"
-
+import useScrollToBottom from "@/utils"
 const font = Montserrat({
     weight: "600",
     subsets: ["latin"]
 })
 
-export const Navbar = () => {
+function Navbar() {
     // const { isSignedIn } = useAuth()
     // const { user } = useUser()
+    // const handleScrollToBottom = () => {
+    //     window.scrollTo({
+    //         top: document.body.scrollHeight,
+    //         behavior: 'smooth'
+    //     });
+    // };
+
     return (
         <nav className="flex items-center justify-between p-4 mx-auto max-w-screen-xl h-full w-full">
             <Link href="/" className="flex items-center">
@@ -52,10 +59,12 @@ export const Navbar = () => {
                         <>
                             
                         </>)} */}
-                <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white">
+                <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white" onClick={useScrollToBottom}>
                     Book Now!
                 </button>
             </div>
         </nav>
     )
 }
+
+export default Navbar
