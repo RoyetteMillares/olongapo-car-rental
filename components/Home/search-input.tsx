@@ -23,7 +23,7 @@ export default function SearchInput({ carsFilter, setCarsList }: any) {
                         </svg>
                         <input
                             type="text"
-                            placeholder='Search a Car Brand'
+                            placeholder='Search a Car or Motorcycle Brand'
                             className='p-2 outline-none bg-transparent'
                             value={searchInput}
                             onChange={handleSearch}

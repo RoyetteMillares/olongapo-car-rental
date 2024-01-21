@@ -18,10 +18,9 @@ function CarsFilterOption({ carsFilter, setBrand, orderCarList }: any) {
         setBrandList(Array.from(BrandSet))
     }
     return (
-        <section className="mt-10 flex justify-between items-center">
+        <section className="mt-10 p-4 flex flex-col md:flex-row justify-between items-end">
             <div>
-                <h2 className="hero__subtitle">Cars and Motorcycle Catalog </h2>
-                <h3>Explore Cars you might like</h3>
+                <h3 className="hidden md:block text-md md:text-[27px] text-black-100 font-light mt-5">Explore Cars or Motorcycle you might like</h3>
             </div>
             <div className="flex gap-2 items-center">
                 <select className="select select-bordered w-full max-w-xs"
@@ -31,7 +30,7 @@ function CarsFilterOption({ carsFilter, setBrand, orderCarList }: any) {
                     <option value={-1}>Min to Max</option>
                     <option value={1}>Max to Min</option>
                 </select>
-                <select className="hidden md:block select select-bordered w-full max-w-xs"
+                <select className=" md:block select select-bordered w-full max-w-xs"
                     onChange={(e) => setBrand(e.target.value)}
                 >
                     <option defaultValue="Manufacture">Manufacture</option>

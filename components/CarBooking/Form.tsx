@@ -1,9 +1,11 @@
 import { createBooking, getStoreLocation } from "@/services";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+import useModalStore from '@/store';
 
 function Form({ car }: any) {
+    const { isModalOpen, toggleModal } = useModalStore();
+    console.log(isModalOpen, 'yet One')
     const [storeLocation, setStoreLocation] = useState<any>([]);
     const [formValue, setFormValue] = useState({
         userName: "",
@@ -17,6 +19,7 @@ function Form({ car }: any) {
     });
     const [bookingDuration, setBookingDuration] = useState<number | "custom">(1); // Default to 1 day
     const [customDuration, setCustomDuration] = useState<number | null>(0);
+    const [formChanged, setFormChanged] = useState(false);
 
     useEffect(() => {
         getStoreLocations();
@@ -90,10 +93,66 @@ function Form({ car }: any) {
         });
     };
 
+    const validateForm = () => {
+        const requiredFields = [
+            "userName",
+            "pickUpDate",
+            "dropOffDate",
+            "pickUpTime",
+            "dropOffTime",
+            "contactNumber",
+        ];
+
+        for (const field of requiredFields) {
+            if (formValue[field as keyof typeof formValue] === "") {
+                toast.error(`Please fill in the ${field.replace(/([A-Z])/g, " $1").toLowerCase()}.`);
+                return false;
+            }
+        }
+
+        // Additional validation logic can be added here
+
+        return true;
+    };
+
+    useEffect(() => {
+        // Compare each field in formValue with the initial state
+        const isFormValueChanged =
+            formValue.userName !== "" ||
+            formValue.location !== "SMCentral" ||
+            formValue.pickUpDate !== "" ||
+            formValue.dropOffDate !== "" ||
+            formValue.pickUpTime !== "" ||
+            formValue.dropOffTime !== "" ||
+            formValue.contactNumber !== "" ||
+            formValue.carId !== "";
+
+        setFormChanged(isFormValueChanged);
+    }, [formValue]);
 
     const handleonSubmit = async () => {
-        const response = await createBooking(formValue);
-        toast.success("Booking Created Successfully");
+        // Check if any required fields are empty
+        const requiredFields = ['userName', 'pickUpDate', 'dropOffDate', 'pickUpTime', 'dropOffTime', 'contactNumber'];
+        const anyFieldEmpty = requiredFields.some((field) => (formValue[field as keyof typeof formValue] === ""));
+
+        if (validateForm()) {
+            // Only make the API call if form validation passes
+            const response = await createBooking(formValue);
+            toast.success("Booking Created Successfully");
+        }
+        // Only make the API call if there are changes in the formValue and all required fields are filled
+        if (formChanged && !anyFieldEmpty) {
+            const response = await createBooking(formValue);
+            toast.success("Booking Created Successfully");
+        } else {
+            if (anyFieldEmpty) {
+                // Handle the case when any required field is empty
+                toast.error("Please fill in all required fields.");
+            } else {
+                // Handle the case when there are no changes in the formValue
+                toast.error("No changes in the form.");
+            }
+        }
     };
 
     return (
@@ -203,7 +262,7 @@ function Form({ car }: any) {
                 />
             </div>
             <div className="modal-action">
-                <button className="btn">Close</button>
+                <button className="btn" onClick={toggleModal}>Close</button>
                 <button
                     className="btn bg-blue-400 text-white hover:bg-blue-500"
                     onClick={handleonSubmit}
