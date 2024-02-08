@@ -95,7 +95,6 @@ function Form({ car }: any) {
 
     const validateForm = () => {
         const requiredFields = [
-            "userName",
             "pickUpDate",
             "dropOffDate",
             "pickUpTime",
@@ -118,7 +117,6 @@ function Form({ car }: any) {
     useEffect(() => {
         // Compare each field in formValue with the initial state
         const isFormValueChanged =
-            formValue.userName !== "" ||
             formValue.location !== "SMCentral" ||
             formValue.pickUpDate !== "" ||
             formValue.dropOffDate !== "" ||
@@ -132,26 +130,13 @@ function Form({ car }: any) {
 
     const handleonSubmit = async () => {
         // Check if any required fields are empty
-        const requiredFields = ['userName', 'pickUpDate', 'dropOffDate', 'pickUpTime', 'dropOffTime', 'contactNumber'];
+        const requiredFields = ['pickUpDate', 'dropOffDate', 'pickUpTime', 'dropOffTime', 'contactNumber'];
         const anyFieldEmpty = requiredFields.some((field) => (formValue[field as keyof typeof formValue] === ""));
 
         if (validateForm()) {
             // Only make the API call if form validation passes
             const response = await createBooking(formValue);
             toast.success("Booking Created Successfully");
-        }
-        // Only make the API call if there are changes in the formValue and all required fields are filled
-        if (formChanged && !anyFieldEmpty) {
-            const response = await createBooking(formValue);
-            toast.success("Booking Created Successfully");
-        } else {
-            if (anyFieldEmpty) {
-                // Handle the case when any required field is empty
-                toast.error("Please fill in all required fields.");
-            } else {
-                // Handle the case when there are no changes in the formValue
-                toast.error("No changes in the form.");
-            }
         }
     };
 

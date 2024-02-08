@@ -51,7 +51,6 @@ mutation MyMutation {
     location: "`+ formValue.location + `", 
     pickUpDate: "`+ formValue.pickUpDate + `", 
     pickUpTime: "`+ formValue.pickUpTime + `", 
-    userName: "`+ formValue.userName + `"
   }
   ) {
     id
