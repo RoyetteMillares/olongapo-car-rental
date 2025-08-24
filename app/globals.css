@@ -9,7 +9,7 @@
 }
 
 .hero__image-container {
-  @apply xl:flex-[1.5] h-[250px] md:h-[50vh] flex justify-center items-center w-full xl:h-[70vh] bg-blue-500 rounded-md;
+  @apply xl:flex-[1.5] h-[250px] md:h-[50vh] flex justify-center items-center w-full xl:h-[70vh] rounded-md;
 }
 
 .hero__image {

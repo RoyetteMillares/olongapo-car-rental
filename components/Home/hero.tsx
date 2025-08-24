@@ -7,7 +7,7 @@ export default function Hero() {
         <section className="p-4 mx-auto max-w-screen-xl h-full w-full mb-[5rem] xl:mt-[2.5rem]">
             <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-5">
                 <div>
-                    <h1 className="hero__title">
+                    <h1 className="hero__title text-black">
                         Find, book, rent a car—quick and
                         <DynamicTitle
                             title="super easy!"
@@ -16,7 +16,7 @@ export default function Hero() {
                             height="hidden md:block"
                         />
                     </h1>
-                    <p className="hero__subtitle">
+                    <p className="hero__subtitle text-black">
                         Streamline your car rental experience with our effortless booking
                         process.
                     </p>
