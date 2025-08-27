@@ -7,7 +7,7 @@ import {
 import Hero from "@/components/Home/hero";
 import SearchInput from "@/components/Home/search-input";
 import CarsFilterOption from "@/components/Home/CarsFilterOption";
-import { getCarsList } from "@/services";
+import { getCarsList, getCurrentlyBookedCarIds } from "@/services";
 import { useEffect, useState } from "react";
 import CarsList from "@/components/Home/CarsList";
 import { CarsListProps } from "@/types"
@@ -22,9 +22,13 @@ const LandingPage = () => {
 
     const getCarsLists = async () => {
         try {
-            const result: any = await getCarsList();
-            setCarsList(result?.carLists)
-            setCarsFilter(result?.carLists)
+            const [result, bookedIds]: any = await Promise.all([
+                getCarsList(),
+                getCurrentlyBookedCarIds(),
+            ]);
+            const filtered = (result?.carLists || []).filter((c: any) => !bookedIds.includes(c.id))
+            setCarsList(filtered)
+            setCarsFilter(filtered)
         } catch (error) {
             console.error('Error fetching cars list:', error);
         }
@@ -41,7 +45,7 @@ const LandingPage = () => {
     return (
         <div className="h-full">
             <Hero />
-            <SearchInput carsFilter={carsFilter} setCarsList={setCarsList} />
+            {/* <SearchInput carsFilter={carsFilter} setCarsList={setCarsList} /> */}
             <CarsFilterOption carsFilter={carsFilter}
                 orderCarList={(value: string) => orderCarList(value)}
                 setBrand={(value: string) => filterCarList(value)}

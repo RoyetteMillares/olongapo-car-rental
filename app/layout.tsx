@@ -18,8 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // <ClerkProvider>
-    //     </ClerkProvider>
+     <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
         <FacebookChat />
@@ -27,6 +26,7 @@ export default function RootLayout({
         <ToasterProvider />
       </body>
     </html>
+    </ClerkProvider>
 
   )
 }

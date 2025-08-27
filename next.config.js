@@ -5,13 +5,19 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'ap-northeast-1.graphassets.com',
+                hostname: 'ap-south-1.graphassets.com',
                 port: '',
                 pathname: '/**',
             },
             {
                 protocol: 'https',
                 hostname: 'img.clerk.com',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'media.graphassets.com',
                 port: '',
                 pathname: '/**',
             },

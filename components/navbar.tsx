@@ -3,8 +3,7 @@ import React, { useEffect } from "react"
 import { Montserrat } from "next/font/google"
 import Image from "next/image"
 import Link from "next/link"
-import { useAuth } from "@clerk/nextjs"
-import { useUser } from "@clerk/nextjs"
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs"
 import useScrollToBottom from "@/utils"
 const font = Montserrat({
     weight: "600",
@@ -12,6 +11,7 @@ const font = Montserrat({
 })
 
 function Navbar() {
+    const { user } = useUser()
     // const { isSignedIn } = useAuth()
     // const { user } = useUser()
     // const handleScrollToBottom = () => {
@@ -39,29 +39,20 @@ function Navbar() {
                 <h2 className="hover:bg-blue-500 cursor-pointer p-2 rounded-full hover:text-white">Contact Us</h2>
             </div>
             <div className="flex items-center gap-x-2">
-                {/* <Link
-                    href={isSignedIn ? "/" : "/sign-up"}
-                >
-
-                </Link> */}
-                {/* {isSignedIn ? (<>
-                    {user?.imageUrl && (
-                        <Image
-                            src={user.imageUrl}
-                            width={50}
-                            height={50}
-                            className="rounded-full"
-                            alt="Avatar"
-                        />
-                    )}
-                </>) :
-                    (
-                        <>
-                            
-                        </>)} */}
                 <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white" onClick={useScrollToBottom}>
                     Book Now!
                 </button>
+                <SignedOut>
+                    <Link href="/sign-in" className="p-2 bg-gray-100 px-4 rounded-full hover:scale-105 transition-all">Sign in</Link>
+                    <Link href="/sign-up" className="p-2 bg-gray-100 px-4 rounded-full hover:scale-105 transition-all">Sign up</Link>
+                </SignedOut>
+                <SignedIn>
+                    <Link href="/bookings" className="p-2 bg-gray-100 px-4 rounded-full hover:scale-105 transition-all">My Bookings</Link>
+                    {(process.env.NEXT_PUBLIC_ADMIN_EMAILS || '').split(',').map(e=>e.trim().toLowerCase()).includes((user?.emailAddresses?.[0]?.emailAddress || '').toLowerCase()) && (
+                        <Link href="/admin/bookings" className="p-2 bg-gray-100 px-4 rounded-full hover:scale-105 transition-all">Admin</Link>
+                    )}
+                    <UserButton afterSignOutUrl="/" />
+                </SignedIn>
             </div>
         </nav>
     )

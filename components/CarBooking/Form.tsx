@@ -1,9 +1,12 @@
 import { createBooking, getStoreLocation } from "@/services";
 import { useEffect, useState } from "react";
+import { useAuth, useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import useModalStore from '@/store';
 
 function Form({ car }: any) {
+    const { isSignedIn } = useAuth();
+    const { user } = useUser();
     const { isModalOpen, toggleModal } = useModalStore();
     console.log(isModalOpen, 'yet One')
     const [storeLocation, setStoreLocation] = useState<any>([]);
@@ -32,12 +35,18 @@ function Form({ car }: any) {
     }, [car]);
 
     useEffect(() => {
+        if (user?.fullName) {
+            setFormValue(prev => ({ ...prev, userName: prev.userName || user.fullName! }));
+        }
+    }, [user]);
+
+    useEffect(() => {
         updateDropOffDateTime(bookingDuration);
     }, [formValue.pickUpDate, formValue.pickUpTime, bookingDuration, customDuration]);
 
     const getStoreLocations = async () => {
         const response: any = await getStoreLocation();
-        setStoreLocation(response?.storeLocations);
+        setStoreLocation(response?.storesLocations);
     };
 
     const handleonChange = (event: any) => {
@@ -69,6 +78,44 @@ function Form({ car }: any) {
         updateDropOffDateTime("custom");
     };
 
+    // Philippines mobile number utils
+    const normalizePhilippineMobile = (input: string): string => {
+        let value = (input || "").trim();
+        // keep only digits and plus
+        value = value.replace(/[^\d+]/g, "");
+
+        if (value === "") return "+63";
+
+        if (value.startsWith("+63")) {
+            const rest = value.slice(3).replace(/\D/g, "").slice(0, 10);
+            return "+63" + rest;
+        }
+        if (value.startsWith("63")) {
+            const rest = value.slice(2).replace(/\D/g, "").slice(0, 10);
+            return "+63" + rest;
+        }
+        if (value.startsWith("0")) {
+            const rest = value.slice(1).replace(/\D/g, "").slice(0, 10);
+            return "+63" + rest;
+        }
+        const digits = value.replace(/\D/g, "");
+        if (digits.startsWith("9")) {
+            return "+63" + digits.slice(0, 10);
+        }
+        return "+63";
+    };
+
+    const isValidPhilippineMobile = (value: string): boolean => /^(\+639)\d{9}$/.test(value);
+
+    const handleContactNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = normalizePhilippineMobile(event.target.value);
+        setFormValue(prev => ({ ...prev, contactNumber: formatted }));
+    };
+
+    const handleContactNumberFocus = () => {
+        setFormValue(prev => ({ ...prev, contactNumber: prev.contactNumber || "+63" }));
+    };
+
     const updateDropOffDateTime = (duration: number | "custom") => {
         if (!formValue.pickUpDate || !formValue.pickUpTime) return;
 
@@ -95,6 +142,7 @@ function Form({ car }: any) {
 
     const validateForm = () => {
         const requiredFields = [
+            "userName",
             "pickUpDate",
             "dropOffDate",
             "pickUpTime",
@@ -109,7 +157,10 @@ function Form({ car }: any) {
             }
         }
 
-        // Additional validation logic can be added here
+        if (!isValidPhilippineMobile(formValue.contactNumber)) {
+            toast.error("Enter a valid PH mobile number in +639XXXXXXXXX format.");
+            return false;
+        }
 
         return true;
     };
@@ -129,6 +180,11 @@ function Form({ car }: any) {
     }, [formValue]);
 
     const handleonSubmit = async () => {
+        if (!isSignedIn) {
+            toast.error("Please sign in to book.");
+            window.location.href = "/sign-in";
+            return;
+        }
         // Check if any required fields are empty
         const requiredFields = ['pickUpDate', 'dropOffDate', 'pickUpTime', 'dropOffTime', 'contactNumber'];
         const anyFieldEmpty = requiredFields.some((field) => (formValue[field as keyof typeof formValue] === ""));
@@ -144,9 +200,20 @@ function Form({ car }: any) {
         <>
             <div>
                 <div className="flex flex-col w-full mb-5">
+                    <label className="text-gray-800">Full Name</label>
+                    <input
+                        className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
+                        name="userName"
+                        type="text"
+                        placeholder="Your full name"
+                        value={formValue.userName}
+                        onChange={handleonChange}
+                    />
+                </div>
+                <div className="flex flex-col w-full mb-5">
                     <label className="text-gray-800">Pick Up Location</label>
                     <select
-                        className="select select-bordered w-full max-w-lg"
+                        className="select select-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                         value={formValue.location}
                         onChange={handleonChange}
                         name="location"
@@ -164,7 +231,7 @@ function Form({ car }: any) {
                     <div className="w-full">
                         <label className="text-gray-800">Pick Up Date</label>
                         <input
-                            className="input input-bordered w-full max-w-lg"
+                            className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                             name="pickUpDate"
                             type="date"
                             placeholder="Click Here"
@@ -176,7 +243,7 @@ function Form({ car }: any) {
                     <div className="w-full">
                         <label className="text-gray-800">Pick Up Time</label>
                         <input
-                            className="input input-bordered w-full max-w-lg"
+                            className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                             name="pickUpTime"
                             type="time"
                             placeholder="Click Here"
@@ -188,7 +255,7 @@ function Form({ car }: any) {
                 <div className="w-full">
                     <label className="text-gray-800 text-xl">Booking Duration(Days)</label>
                     <select
-                        className="select select-bordered w-full max-w-lg"
+                        className="select select-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                         value={bookingDuration}
                         onChange={handleDurationChange}
                         name="bookingDuration"
@@ -202,7 +269,7 @@ function Form({ car }: any) {
                     </select>
                     {bookingDuration === "custom" && (
                         <input
-                            className="input input-bordered w-full max-w-lg mt-2"
+                            className="input input-bordered w-full max-w-lg mt-2 bg-gray-100 text-gray-800"
                             name="customDuration"
                             type="number"
                             min="1"
@@ -215,21 +282,23 @@ function Form({ car }: any) {
                     <div className="w-full">
                         <label className="text-gray-800">Drop Off Date</label>
                         <input
-                            className="input input-bordered w-full max-w-lg"
+                            className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                             name="dropOffDate"
                             type="date"
                             value={formValue.dropOffDate}
                             readOnly
+                            disabled
                         />
                     </div>
                     <div className="w-full">
                         <label className="text-gray-800">Drop Off Time</label>
                         <input
-                            className="input input-bordered w-full max-w-lg"
+                            className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                             name="dropOffTime"
                             type="time"
                             value={formValue.dropOffTime}
                             readOnly
+                            disabled
                         />
                     </div>
                 </div>
@@ -238,18 +307,22 @@ function Form({ car }: any) {
             <div className="w-full">
                 <label className="text-gray-800">Contact Number</label>
                 <input
-                    className="input input-bordered w-full max-w-lg"
+                    className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                     name="contactNumber"
-                    type="number"
-                    placeholder="Type your contact number here"
-                    onChange={handleonChange}
+                    type="tel"
+                    inputMode="tel"
+                    pattern="^\\+639\\d{9}$"
+                    placeholder="+639XXXXXXXXX"
+                    value={formValue.contactNumber}
+                    onFocus={handleContactNumberFocus}
+                    onChange={handleContactNumberChange}
 
                 />
             </div>
             <div className="modal-action">
-                <button className="btn" onClick={toggleModal}>Close</button>
+                <button className="btn bg-zinc-500 text-white hover:bg-zinc-600 border-none" onClick={toggleModal}>Close</button>
                 <button
-                    className="btn bg-blue-400 text-white hover:bg-blue-500"
+                    className="btn border-none bg-blue-400 text-white hover:bg-blue-500"
                     onClick={handleonSubmit}
                 >
                     Schedule Book
