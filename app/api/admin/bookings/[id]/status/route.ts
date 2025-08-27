@@ -5,8 +5,9 @@ import { GraphQLClient, gql } from "graphql-request"
 const HYGRAPH_CONTENT_API_URL = process.env.HYGRAPH_CONTENT_API_URL || "https://api-ap-south-1.hygraph.com/v2/cmeprfwik05nl07usg5gwvtl7/master"
 const HYGRAPH_TOKEN = process.env.HYGRAPH_TOKEN
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, context: any) {
   try {
+    const { params } = context
     const user = await currentUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
