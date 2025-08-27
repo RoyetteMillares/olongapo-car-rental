@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { GraphQLClient, gql } from "graphql-request";
+import { currentUser } from "@clerk/nextjs/server";
 
 const HYGRAPH_CONTENT_API_URL = process.env.HYGRAPH_CONTENT_API_URL || "https://api-ap-south-1.hygraph.com/v2/cmeprfwik05nl07usg5gwvtl7/master";
 const HYGRAPH_TOKEN = process.env.HYGRAPH_TOKEN;
@@ -11,6 +12,12 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const computedUserName = [user.firstName, user.lastName].filter(Boolean).join(" ");
 
     const writeClient = new GraphQLClient(HYGRAPH_CONTENT_API_URL, {
       headers: { Authorization: `Bearer ${HYGRAPH_TOKEN}` },
@@ -24,7 +31,7 @@ export async function POST(request: Request) {
 
     const data = {
       carId: { connect: { id: body.carId } },
-      userName: body.userName,
+      userName: computedUserName,
       contactNumber: body.contactNumber,
       dropOffDate: body.dropOffDate,
       dropOffTime: body.dropOffTime,

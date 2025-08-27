@@ -35,10 +35,11 @@ function Form({ car }: any) {
     }, [car]);
 
     useEffect(() => {
-        if (user?.fullName) {
-            setFormValue(prev => ({ ...prev, userName: prev.userName || user.fullName! }));
+        const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+        if (name) {
+            setFormValue(prev => ({ ...prev, userName: prev.userName || name }));
         }
-    }, [user]);
+    }, [user?.firstName, user?.lastName]);
 
     useEffect(() => {
         updateDropOffDateTime(bookingDuration);
@@ -207,7 +208,7 @@ function Form({ car }: any) {
                         type="text"
                         placeholder="Your full name"
                         value={formValue.userName}
-                        onChange={handleonChange}
+                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
