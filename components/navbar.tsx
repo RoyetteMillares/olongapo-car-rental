@@ -39,7 +39,7 @@ function Navbar() {
                 <h2 className="hover:bg-blue-500 cursor-pointer p-2 rounded-full hover:text-white">Contact Us</h2>
             </div>
             <div className="flex items-center gap-x-2">
-                <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white" onClick={useScrollToBottom}>
+                <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white" onClick={() => useScrollToBottom()}>
                     Book Now!
                 </button>
                 <SignedOut>

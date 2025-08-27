@@ -18,23 +18,27 @@ const LandingPage = () => {
     const [allCars, setAllCars] = useState<any>([])
 
     useEffect(() => {
-        getCarsLists()
+        let mounted = true
+        const run = async () => {
+            try {
+                const [result, bookedIds]: any = await Promise.all([
+                    getCarsList(),
+                    getCurrentlyBookedCarIds(),
+                ])
+                if (!mounted) return
+                const filtered = (result?.carLists || []).filter((c: any) => !bookedIds.includes(c.id))
+                setCarsList(filtered)
+                setCarsFilter(filtered)
+                setAllCars(filtered)
+            } catch (error) {
+                if (mounted) console.error('Error fetching cars list:', error)
+            }
+        }
+        run()
+        return () => { mounted = false }
     }, [])
 
-    const getCarsLists = async () => {
-        try {
-            const [result, bookedIds]: any = await Promise.all([
-                getCarsList(),
-                getCurrentlyBookedCarIds(),
-            ]);
-            const filtered = (result?.carLists || []).filter((c: any) => !bookedIds.includes(c.id))
-            setCarsList(filtered)
-            setCarsFilter(filtered)
-            setAllCars(filtered)
-        } catch (error) {
-            console.error('Error fetching cars list:', error);
-        }
-    };
+    // moved fetching into the effect above to avoid state updates after unmount
 
     const filterCarList = (brand: string) => {
         if (!brand) {

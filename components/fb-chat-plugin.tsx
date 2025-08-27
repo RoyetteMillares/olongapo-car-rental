@@ -1,43 +1,21 @@
 "use client"
 
-import Script from "next/script";
 import React from 'react'
 
 function FacebookChat() {
+    const pageId = process.env.NEXT_PUBLIC_FB_PAGE_ID
+    if (!pageId) return null
+    const href = `https://m.me/${pageId}`
     return (
-        <>
-            <div id="fb-root"></div>
-            <div id="fb-customer-chat" className="fb-customerchat"></div>
-            <Script
-                id="messenger-tag"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                    __html: `{var chatbox = document.getElementById('fb-customer-chat');
-                chatbox.setAttribute("page_id", "145144495359335");
-                chatbox.setAttribute("attribution", "biz_inbox");}`,
-                }}
-            ></Script>
-            <Script
-                id="messenger-sdk"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                    __html: `{ window.fbAsyncInit = function() {
-                    FB.init({
-                        xfbml: true,
-                        version: 'v18.0'
-                    });
-      };
-
-                (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-                fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));}`,
-                }}
-            ></Script>
-        </>
+        <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Message us on Messenger"
+            className="fixed bottom-4 right-4 z-50 rounded-full bg-[#0084FF] text-white px-4 py-2 shadow-lg hover:bg-[#0077e6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0084FF]"
+        >
+            Message us
+        </a>
     )
 }
 
