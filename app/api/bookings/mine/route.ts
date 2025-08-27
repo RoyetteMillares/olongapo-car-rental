@@ -24,6 +24,7 @@ export async function GET() {
           pickUpDate
           location
           pickUpTime
+          bookingStatus
         }
       }
     `;
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
           pickUpDate
           location
           pickUpTime
+          bookingStatus
         }
       }
     `;

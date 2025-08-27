@@ -48,7 +48,11 @@ export const getStoreLocation = async () => {
 export const getCurrentlyBookedCarIds = async (): Promise<string[]> => {
   const query = gql`
     query ActiveBookings {
-      bookings(first: 200, orderBy: createdAt_DESC) {
+      bookings(
+        first: 200
+        orderBy: createdAt_DESC
+        where: { bookingStatus: approved }
+      ) {
         pickUpDate
         dropOffDate
         carId { id }

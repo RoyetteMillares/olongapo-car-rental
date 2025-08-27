@@ -21,6 +21,7 @@ export default async function Page() {
         pickUpDate
         location
         pickUpTime
+        bookingStatus
         carId { id name image { url } }
       }
     }

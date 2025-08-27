@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { GraphQLClient, gql } from "graphql-request";
 import Image from "next/image";
+import AdminStatusControl from "./status-control";
 
 export default async function AdminBookingsPage() {
   const user = await currentUser();
@@ -25,6 +26,7 @@ export default async function AdminBookingsPage() {
         pickUpTime
         dropOffDate
         dropOffTime
+        bookingStatus
         carId { id name image { url } }
       }
     }
@@ -34,7 +36,10 @@ export default async function AdminBookingsPage() {
 
   return (
     <div className="max-w-screen-xl mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Admin • All Bookings</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold">Admin • Bookings</h1>
+        <div className="text-sm text-gray-500">Manage approvals and availability</div>
+      </div>
       {bookings.length === 0 ? (
         <p className="text-gray-600">No bookings yet.</p>
       ) : (
@@ -48,6 +53,7 @@ export default async function AdminBookingsPage() {
                 <th>Location</th>
                 <th>Pickup</th>
                 <th>Dropoff</th>
+                <th>Status</th>
                 <th>Created</th>
               </tr>
             </thead>
@@ -69,6 +75,9 @@ export default async function AdminBookingsPage() {
                   <td>{b.location}</td>
                   <td>{b.pickUpDate} {b.pickUpTime}</td>
                   <td>{b.dropOffDate} {b.dropOffTime}</td>
+                  <td className="uppercase text-xs font-semibold">
+                    <AdminStatusControl id={b.id} status={b.bookingStatus || 'PENDING'} />
+                  </td>
                   <td className="whitespace-nowrap">{new Date(b.createdAt).toLocaleString()}</td>
                 </tr>
               ))}

@@ -8,6 +8,7 @@ type Booking = {
   pickUpTime: string
   dropOffDate: string
   dropOffTime: string
+  bookingStatus?: 'pending' | 'approved' | 'cancelled'
   carId?: { id: string; name?: string; image?: { url?: string } }
 }
 
@@ -26,6 +27,11 @@ export default function BookingCard({ booking }: { booking: Booking }) {
         <div className="mt-2 text-sm grid grid-cols-1 gap-0.5">
           <div><span className="font-semibold">Pickup:</span> {booking.pickUpDate} {booking.pickUpTime}</div>
           <div><span className="font-semibold">Dropoff:</span> {booking.dropOffDate} {booking.dropOffTime}</div>
+        </div>
+        <div className="mt-2">
+          <span className="text-xs font-semibold uppercase px-2 py-0.5 rounded bg-gray-100">
+            {booking.bookingStatus || 'PENDING'}
+          </span>
         </div>
       </div>
     </div>

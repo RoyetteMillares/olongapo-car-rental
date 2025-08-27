@@ -15,6 +15,7 @@ import { CarsListProps } from "@/types"
 const LandingPage = () => {
     const [carsList, setCarsList] = useState<any>([]);
     const [carsFilter, setCarsFilter] = useState<any>([])
+    const [allCars, setAllCars] = useState<any>([])
 
     useEffect(() => {
         getCarsLists()
@@ -29,18 +30,26 @@ const LandingPage = () => {
             const filtered = (result?.carLists || []).filter((c: any) => !bookedIds.includes(c.id))
             setCarsList(filtered)
             setCarsFilter(filtered)
+            setAllCars(filtered)
         } catch (error) {
             console.error('Error fetching cars list:', error);
         }
     };
 
     const filterCarList = (brand: string) => {
-        const filterList = carsFilter.filter((item: any) => item.carBrand === brand)
+        if (!brand) {
+            setCarsList(allCars)
+            return
+        }
+        const filterList = allCars.filter((item: any) => item.carBrand === brand)
         setCarsList(filterList)
     }
     const orderCarList = (order: any) => {
         const sortedData = [...carsFilter].sort((a, b) => order == -1 ? a.price - b.price : b.price - a.price)
         setCarsList(sortedData)
+    }
+    const clearFilters = () => {
+        setCarsList(allCars)
     }
     return (
         <div className="h-full">
@@ -49,6 +58,7 @@ const LandingPage = () => {
             <CarsFilterOption carsFilter={carsFilter}
                 orderCarList={(value: string) => orderCarList(value)}
                 setBrand={(value: string) => filterCarList(value)}
+                clearFilters={clearFilters}
             />
             <CarsList carsList={carsList} />
         </div>
