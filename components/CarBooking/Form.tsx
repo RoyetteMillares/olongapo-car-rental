@@ -199,7 +199,7 @@ function Form({ car }: any) {
             try {
                 setIsSubmitting(true);
                 const toastId = toast.loading("Creating your booking…");
-                const response = await createBooking(formValue);
+                const response = await createBooking({ ...formValue });
                 toast.success("Booking created successfully", { id: toastId });
                 // Close modal and emit booked car id for list update
                 try { toggleModal(); } catch {}

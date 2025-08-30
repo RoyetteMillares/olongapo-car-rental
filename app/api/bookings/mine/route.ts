@@ -8,7 +8,6 @@ export async function GET() {
   try {
     const user = await currentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const userId = user.id;
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
     const username = user.username || "";
     const primaryEmail = Array.isArray(user.emailAddresses)
@@ -18,45 +17,23 @@ export async function GET() {
     if (!names.length) return NextResponse.json({ error: "Missing user identifiers" }, { status: 400 });
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
-    const QUERY_BY_ID = gql`
-      query MyQuery($userId: String!) {
-        bookings(where: { userId: $userId, bookingStatus: approved }, orderBy: createdAt_DESC) {
-          createdAt
-          id
-          userName
-          contactNumber
-          dropOffTime
-          dropOffDate
-          pickUpDate
-          location
-          pickUpTime
-          bookingStatus
-        }
-      }
-    `;
-    const QUERY_BY_NAMES = gql`
+    const QUERY = gql`
       query MyQuery($names: [String!]) {
         bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
-          createdAt
-          id
-          userName
           contactNumber
-          dropOffTime
+          createdAt
           dropOffDate
-          pickUpDate
+          dropOffTime
+          id
           location
+          pickUpDate
           pickUpTime
-          bookingStatus
+          userName
         }
       }
     `;
-    try {
-      const byId = await readClient.request(QUERY_BY_ID as any, { userId });
-      return NextResponse.json(byId);
-    } catch (_err) {
-      const byNames = await readClient.request(QUERY_BY_NAMES as any, { names });
-      return NextResponse.json(byNames);
-    }
+    const data = await readClient.request(QUERY as any, { names });
+    return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Unknown error" }, { status: 500 });
   }
@@ -80,45 +57,23 @@ export async function POST(request: Request) {
     if (!names.length) return NextResponse.json({ error: "user identifiers are required" }, { status: 400 });
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
-    const QUERY_BY_ID = gql`
-      query MyQuery($userId: String!) {
-        bookings(where: { userId: $userId, bookingStatus: approved }, orderBy: createdAt_DESC) {
-          createdAt
-          id
-          userName
-          contactNumber
-          dropOffTime
-          dropOffDate
-          pickUpDate
-          location
-          pickUpTime
-          bookingStatus
-        }
-      }
-    `;
-    const QUERY_BY_NAMES = gql`
+    const QUERY = gql`
       query MyQuery($names: [String!]) {
         bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
-          createdAt
-          id
-          userName
           contactNumber
-          dropOffTime
+          createdAt
           dropOffDate
-          pickUpDate
+          dropOffTime
+          id
           location
+          pickUpDate
           pickUpTime
-          bookingStatus
+          userName
         }
       }
     `;
-    try {
-      const byId = await readClient.request(QUERY_BY_ID as any, { userId });
-      return NextResponse.json(byId);
-    } catch (_err) {
-      const byNames = await readClient.request(QUERY_BY_NAMES as any, { names });
-      return NextResponse.json(byNames);
-    }
+    const data = await readClient.request(QUERY as any, { names });
+    return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.response || error?.message || "Unknown error" }, { status: 500 });
   }
