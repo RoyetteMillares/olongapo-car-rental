@@ -31,6 +31,8 @@ export async function GET(request: Request) {
           pickUpDate
           pickUpTime
           userName
+          carList { id name image { url } }
+          carId { id name image { url } }
         }
       }
     `;
@@ -47,6 +49,8 @@ export async function GET(request: Request) {
             pickUpDate
             pickUpTime
             userName
+            carList { id name image { url } }
+            carId { id name image { url } }
           }
         }
       `;
