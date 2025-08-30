@@ -207,8 +207,8 @@ function Form({ car }: any) {
                         name="userName"
                         type="text"
                         placeholder="Your full name"
+                        onChange={handleonChange}
                         value={formValue.userName}
-                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
