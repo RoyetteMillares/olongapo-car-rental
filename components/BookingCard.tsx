@@ -31,7 +31,7 @@ export default function BookingCard({ booking }: { booking: Booking }) {
           <div><span className="font-semibold">Dropoff:</span> {booking.dropOffDate} {booking.dropOffTime}</div>
         </div>
         <div className="mt-2">
-          <span className="text-xs font-semibold uppercase px-2 py-0.5 rounded bg-gray-100">
+          <span className={`text-xs font-semibold uppercase px-2 py-0.5 rounded ${booking.bookingStatus === 'approved' ? 'bg-green-100 text-green-800' : booking.bookingStatus === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>
             {booking.bookingStatus || 'PENDING'}
           </span>
         </div>
