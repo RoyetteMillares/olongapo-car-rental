@@ -47,7 +47,8 @@ export async function POST(request: Request) {
       location: body.location,
       pickUpDate: body.pickUpDate,
       pickUpTime: body.pickUpTime,
-      bookingStatus: 'pending',
+      bookingStatus: 'approved',
+      email: String(body?.email || ""),
     };
 
     const createRes: any = await writeClient.request(CREATE_MUTATION, { data });

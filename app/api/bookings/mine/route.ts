@@ -20,8 +20,8 @@ export async function GET(request: Request) {
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
-      query MyQuery($names: [String!]) {
-        bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
+      query MyQuery($email: String) {
+        bookings(where: { bookingStatus: approved, email: $email }, orderBy: createdAt_DESC) {
           contactNumber
           createdAt
           dropOffDate
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
       const data = await readClient.request(QUERY_BY_ID as any, { id });
       return NextResponse.json(data);
     }
-    const data = await readClient.request(QUERY as any, { names });
+    const data = await readClient.request(QUERY as any, { email: primaryEmail || undefined });
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Unknown error" }, { status: 500 });
@@ -79,8 +79,8 @@ export async function POST(request: Request) {
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
-      query MyQuery($names: [String!]) {
-        bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
+      query MyQuery($email: String) {
+        bookings(where: { bookingStatus: approved, email: $email }, orderBy: createdAt_DESC) {
           contactNumber
           createdAt
           dropOffDate
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
         }
       }
     `;
-    const data = await readClient.request(QUERY as any, { names });
+    const data = await readClient.request(QUERY as any, { email: primaryEmail || undefined });
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.response || error?.message || "Unknown error" }, { status: 500 });

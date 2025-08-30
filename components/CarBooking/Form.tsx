@@ -21,6 +21,7 @@ function Form({ car }: any) {
         dropOffTime: "",
         contactNumber: "",
         carId: "",
+        email: "",
     });
     const [bookingDuration, setBookingDuration] = useState<number | "custom">(1); // Default to 1 day
     const [customDuration, setCustomDuration] = useState<number | null>(0);
@@ -42,6 +43,10 @@ function Form({ car }: any) {
         const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
         if (name) {
             setFormValue(prev => ({ ...prev, userName: prev.userName || name }));
+        }
+        const email = (user?.primaryEmailAddress as any)?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || "";
+        if (email) {
+            setFormValue(prev => ({ ...prev, email }));
         }
     }, [user?.firstName, user?.lastName]);
 
