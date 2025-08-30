@@ -1,3 +1,5 @@
+"use client"
+
 import { createBooking, getStoreLocation } from "@/services";
 import { useEffect, useState } from "react";
 import { useAuth, useUser } from "@clerk/nextjs";
@@ -35,7 +37,13 @@ function Form({ car }: any) {
         }
     }, [car]);
 
-    // No longer prefill userName; we use Clerk name as placeholder so users can edit or leave blank
+    // Prefill userName from Clerk once loaded, but keep field editable
+    useEffect(() => {
+        const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+        if (name) {
+            setFormValue(prev => ({ ...prev, userName: prev.userName || name }));
+        }
+    }, [user?.firstName, user?.lastName]);
 
     useEffect(() => {
         updateDropOffDateTime(bookingDuration);
@@ -212,12 +220,11 @@ function Form({ car }: any) {
                         className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                         name="userName"
                         type="text"
-                        placeholder={[user?.firstName, user?.lastName].filter(Boolean).join(' ') }
+                        placeholder={[user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Your full name'}
                         autoComplete="name"
                         aria-label="Full Name"
                         onChange={handleonChange}
                         value={formValue.userName}
-                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
