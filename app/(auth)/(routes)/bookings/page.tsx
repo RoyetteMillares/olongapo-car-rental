@@ -1,38 +1,39 @@
-import { currentUser } from "@clerk/nextjs/server";
-import { GraphQLClient, gql } from "graphql-request";
+"use client";
+
+import useSWR from "swr";
 import BookingCard from "@/components/BookingCard";
+import useModalStore from "@/store";
+import { useEffect } from "react";
 
-export default async function Page() {
-  const user = await currentUser();
-  if (!user) return null;
+const fetcher = async (url: string) => {
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch bookings");
+  return res.json();
+};
 
-  const userName = [user.firstName, user.lastName].filter(Boolean).join(' ');
-  const HYGRAPH_CDN_URL = process.env.NEXT_PUBLIC_HYGRAPH_CDN_URL || "https://ap-south-1.cdn.hygraph.com/content/cmeprfwik05nl07usg5gwvtl7/master";
-  const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
-  const QUERY = gql`
-    query MyQuery($userName: String!) {
-      bookings(where: { userName: $userName }, orderBy: createdAt_DESC) {
-        createdAt
-        id
-        userName
-        contactNumber
-        dropOffTime
-        dropOffDate
-        pickUpDate
-        location
-        pickUpTime
-        bookingStatus
-        carId { id name image { url } }
-      }
+export default function Page() {
+  const { lastBookedCarId, setLastBookedCarId } = useModalStore();
+  const { data, error, isLoading, mutate } = useSWR("/api/bookings/mine", fetcher, {
+    revalidateOnFocus: true,
+  });
+
+  useEffect(() => {
+    if (lastBookedCarId) {
+      mutate();
+      setLastBookedCarId(null);
     }
-  `;
-  const data: any = await readClient.request(QUERY, { userName });
+  }, [lastBookedCarId, mutate, setLastBookedCarId]);
+
   const bookings = data?.bookings || [];
 
   return (
     <div className="max-w-screen-xl mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">My Bookings</h1>
-      {bookings.length === 0 ? (
+      {isLoading ? (
+        <p className="text-gray-600">Loading your bookings…</p>
+      ) : error ? (
+        <p className="text-red-600">Couldn\'t load bookings.</p>
+      ) : bookings.length === 0 ? (
         <p className="text-gray-600">No bookings yet.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
