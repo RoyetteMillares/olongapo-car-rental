@@ -35,12 +35,7 @@ function Form({ car }: any) {
         }
     }, [car]);
 
-    useEffect(() => {
-        const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
-        if (name) {
-            setFormValue(prev => ({ ...prev, userName: prev.userName || name }));
-        }
-    }, [user?.firstName, user?.lastName]);
+    // No longer prefill userName; we use Clerk name as placeholder so users can edit or leave blank
 
     useEffect(() => {
         updateDropOffDateTime(bookingDuration);
@@ -52,7 +47,8 @@ function Form({ car }: any) {
     };
 
     const handleonChange = (event: any) => {
-        setFormValue({ ...formValue, [event.target.name]: event.target.value });
+        const { name, value } = event.target
+        setFormValue(prev => ({ ...prev, [name]: value }));
     };
 
     const handleDurationChange = (event: any) => {
@@ -144,7 +140,7 @@ function Form({ car }: any) {
 
     const validateForm = () => {
         const requiredFields = [
-            "userName",
+            // userName is optional on client; server will fallback to Clerk identity
             "pickUpDate",
             "dropOffDate",
             "pickUpTime",
@@ -216,12 +212,11 @@ function Form({ car }: any) {
                         className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                         name="userName"
                         type="text"
-                        placeholder="Your full name"
+                        placeholder={[user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Your full name'}
                         autoComplete="name"
                         aria-label="Full Name"
                         onChange={handleonChange}
                         value={formValue.userName}
-                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
