@@ -35,6 +35,7 @@ export async function GET() {
     `;
 
     const data = await readClient.request(QUERY, { names });
+    console.log(data);
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Unknown error" }, { status: 500 });
