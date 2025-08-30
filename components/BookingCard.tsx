@@ -10,19 +10,21 @@ type Booking = {
   dropOffTime: string
   bookingStatus?: 'pending' | 'approved' | 'cancelled'
   carId?: { id: string; name?: string; image?: { url?: string } }
+  carList?: { id: string; name?: string; image?: { url?: string } }
 }
 
 export default function BookingCard({ booking }: { booking: Booking }) {
-  const imageUrl = booking?.carId?.image?.url
+  const car = booking?.carList || booking?.carId
+  const imageUrl = car?.image?.url
   return (
     <div className="border rounded-lg p-4 bg-white flex gap-3">
       {imageUrl ? (
         <div className="relative w-24 h-16 shrink-0">
-          <Image src={imageUrl} alt={booking?.carId?.name || 'Car'} fill className="object-cover rounded" />
+          <Image src={imageUrl} alt={car?.name || 'Car'} fill className="object-cover rounded" />
         </div>
       ) : null}
       <div className="flex-1">
-        <div className="text-lg font-medium">{booking?.carId?.name || 'Car'}</div>
+        <div className="text-lg font-medium">{car?.name || 'Car'}</div>
         <div className="text-sm text-gray-600">{booking.location}</div>
         <div className="mt-2 text-sm grid grid-cols-1 gap-0.5">
           <div><span className="font-semibold">Pickup:</span> {booking.pickUpDate} {booking.pickUpTime}</div>
