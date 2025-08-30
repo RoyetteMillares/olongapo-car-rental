@@ -23,6 +23,7 @@ function Form({ car }: any) {
     const [bookingDuration, setBookingDuration] = useState<number | "custom">(1); // Default to 1 day
     const [customDuration, setCustomDuration] = useState<number | null>(0);
     const [formChanged, setFormChanged] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         getStoreLocations();
@@ -30,7 +31,7 @@ function Form({ car }: any) {
 
     useEffect(() => {
         if (car) {
-            setFormValue({ ...formValue, carId: car.id });
+            setFormValue(prev => ({ ...prev, carId: car.id }));
         }
     }, [car]);
 
@@ -134,11 +135,11 @@ function Form({ car }: any) {
         const dropOffDate = dropOffDateTime.toISOString().split("T")[0];
         const dropOffTime = dropOffDateTime.toTimeString().split(" ")[0];
 
-        setFormValue({
-            ...formValue,
+        setFormValue(prev => ({
+            ...prev,
             dropOffDate,
             dropOffTime,
-        });
+        }));
     };
 
     const validateForm = () => {
@@ -191,9 +192,18 @@ function Form({ car }: any) {
         const anyFieldEmpty = requiredFields.some((field) => (formValue[field as keyof typeof formValue] === ""));
 
         if (validateForm()) {
-            // Only make the API call if form validation passes
-            const response = await createBooking(formValue);
-            toast.success("Booking Created Successfully");
+            try {
+                setIsSubmitting(true);
+                const response = await createBooking(formValue);
+                toast.success("Booking Created Successfully");
+                // Close modal and emit booked car id for list update
+                try { toggleModal(); } catch {}
+                try { useModalStore.getState().setLastBookedCarId(formValue.carId); } catch {}
+            } catch (e: any) {
+                toast.error("Failed to create booking");
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -207,8 +217,11 @@ function Form({ car }: any) {
                         name="userName"
                         type="text"
                         placeholder="Your full name"
+                        autoComplete="name"
+                        aria-label="Full Name"
                         onChange={handleonChange}
                         value={formValue.userName}
+                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
@@ -321,12 +334,13 @@ function Form({ car }: any) {
                 />
             </div>
             <div className="modal-action">
-                <button className="btn bg-zinc-500 text-white hover:bg-zinc-600 border-none" onClick={toggleModal}>Close</button>
+                <button className="btn bg-zinc-500 text-white hover:bg-zinc-600 border-none" onClick={toggleModal} disabled={isSubmitting}>Close</button>
                 <button
-                    className="btn border-none bg-blue-400 text-white hover:bg-blue-500"
+                    className={`btn border-none text-white ${isSubmitting ? 'bg-blue-300' : 'bg-blue-400 hover:bg-blue-500'}`}
                     onClick={handleonSubmit}
+                    disabled={isSubmitting}
                 >
-                    Schedule Book
+                    {isSubmitting ? 'Booking…' : 'Schedule Book'}
                 </button>
             </div>
         </>

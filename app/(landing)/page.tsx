@@ -10,12 +10,14 @@ import CarsFilterOption from "@/components/Home/CarsFilterOption";
 import { getCarsList, getCurrentlyBookedCarIds } from "@/services";
 import { useEffect, useState } from "react";
 import CarsList from "@/components/Home/CarsList";
+import useModalStore from "@/store";
 import { CarsListProps } from "@/types"
 
 const LandingPage = () => {
     const [carsList, setCarsList] = useState<any>([]);
     const [carsFilter, setCarsFilter] = useState<any>([])
     const [allCars, setAllCars] = useState<any>([])
+    const { lastBookedCarId, setLastBookedCarId } = useModalStore();
 
     useEffect(() => {
         let mounted = true
@@ -37,6 +39,14 @@ const LandingPage = () => {
         run()
         return () => { mounted = false }
     }, [])
+    // Remove a car from lists when booked without reloading
+    useEffect(() => {
+        if (!lastBookedCarId) return;
+        setCarsList((prev: any[]) => prev.filter((c) => c.id !== lastBookedCarId))
+        setCarsFilter((prev: any[]) => prev.filter((c) => c.id !== lastBookedCarId))
+        setAllCars((prev: any[]) => prev.filter((c) => c.id !== lastBookedCarId))
+        setLastBookedCarId(null)
+    }, [lastBookedCarId, setLastBookedCarId])
 
     // moved fetching into the effect above to avoid state updates after unmount
 

@@ -18,6 +18,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const computedUserName = [user.firstName, user.lastName].filter(Boolean).join(" ");
+    const primaryEmail = Array.isArray(user.emailAddresses)
+      ? user.emailAddresses.find((e: any) => e.id === user.primaryEmailAddressId)?.emailAddress
+      : undefined;
+    const providedUserNameRaw = typeof body?.userName === 'string' ? body.userName : '';
+    const providedUserName = providedUserNameRaw.trim();
+    const finalUserName = providedUserName || computedUserName || user.username || primaryEmail || "";
+    if (!finalUserName) {
+      return NextResponse.json({ error: "Missing userName" }, { status: 400 });
+    }
 
     const writeClient = new GraphQLClient(HYGRAPH_CONTENT_API_URL, {
       headers: { Authorization: `Bearer ${HYGRAPH_TOKEN}` },
@@ -31,7 +40,7 @@ export async function POST(request: Request) {
 
     const data = {
       carId: { connect: { id: body.carId } },
-      userName: computedUserName,
+      userName: finalUserName,
       contactNumber: body.contactNumber,
       dropOffDate: body.dropOffDate,
       dropOffTime: body.dropOffTime,

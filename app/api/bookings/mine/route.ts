@@ -8,13 +8,18 @@ export async function GET() {
   try {
     const user = await currentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const userName = [user.firstName, user.lastName].filter(Boolean).join(" ");
-    if (!userName) return NextResponse.json({ error: "Missing userName" }, { status: 400 });
+    const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
+    const username = user.username || "";
+    const primaryEmail = Array.isArray(user.emailAddresses)
+      ? user.emailAddresses.find((e: any) => e.id === user.primaryEmailAddressId)?.emailAddress
+      : undefined;
+    const names = Array.from(new Set([fullName, username, primaryEmail].filter(Boolean))) as string[];
+    if (!names.length) return NextResponse.json({ error: "Missing user identifiers" }, { status: 400 });
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
-      query MyQuery($userName: String!) {
-        bookings(where: { userName: $userName }, orderBy: createdAt_DESC) {
+      query MyQuery($names: [String!]) {
+        bookings(where: { userName_in: $names }, orderBy: createdAt_DESC) {
           createdAt
           id
           userName
@@ -29,7 +34,7 @@ export async function GET() {
       }
     `;
 
-    const data = await readClient.request(QUERY, { userName });
+    const data = await readClient.request(QUERY, { names });
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Unknown error" }, { status: 500 });
@@ -43,16 +48,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const body = await request.json().catch(() => ({} as any));
-    const providedUserName = body?.userName as string | undefined;
+    const providedUserName = (body?.userName as string | undefined)?.trim();
     const user = await currentUser();
-    const computedName = user ? [user.firstName, user.lastName].filter(Boolean).join(" ") : "";
-    const userName = providedUserName || computedName || "";
-    if (!userName) return NextResponse.json({ error: "userName is required" }, { status: 400 });
+    const fullName = user ? [user.firstName, user.lastName].filter(Boolean).join(" ") : "";
+    const username = user?.username || "";
+    const primaryEmail = user && Array.isArray(user.emailAddresses)
+      ? user.emailAddresses.find((e: any) => e.id === user.primaryEmailAddressId)?.emailAddress
+      : undefined;
+    const names = Array.from(new Set([providedUserName, fullName, username, primaryEmail].filter(Boolean))) as string[];
+    if (!names.length) return NextResponse.json({ error: "user identifiers are required" }, { status: 400 });
 
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
-      query MyQuery($userName: String!) {
-        bookings(where: { userName: $userName }, orderBy: createdAt_DESC) {
+      query MyQuery($names: [String!]) {
+        bookings(where: { userName_in: $names }, orderBy: createdAt_DESC) {
           createdAt
           id
           userName
@@ -67,7 +76,7 @@ export async function POST(request: Request) {
       }
     `;
 
-    const data = await readClient.request(QUERY, { userName });
+    const data = await readClient.request(QUERY, { names });
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json({ error: error?.response || error?.message || "Unknown error" }, { status: 500 });
