@@ -15,6 +15,7 @@ export default function Page() {
   const { lastBookedCarId, setLastBookedCarId } = useModalStore();
   const { data, error, isLoading, mutate } = useSWR("/api/bookings/mine", fetcher, {
     revalidateOnFocus: true,
+    refreshInterval: 5000,
   });
 
   useEffect(() => {

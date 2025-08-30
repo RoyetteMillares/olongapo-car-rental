@@ -19,7 +19,7 @@ export async function GET() {
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
       query MyQuery($names: [String!]) {
-        bookings(where: { userName_in: $names }, orderBy: createdAt_DESC) {
+        bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
           createdAt
           id
           userName
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     const readClient = new GraphQLClient(HYGRAPH_CDN_URL);
     const QUERY = gql`
       query MyQuery($names: [String!]) {
-        bookings(where: { userName_in: $names }, orderBy: createdAt_DESC) {
+        bookings(where: { userName_in: $names, bookingStatus: approved }, orderBy: createdAt_DESC) {
           createdAt
           id
           userName
