@@ -212,11 +212,12 @@ function Form({ car }: any) {
                         className="input input-bordered w-full max-w-lg bg-gray-100 text-gray-800"
                         name="userName"
                         type="text"
-                        placeholder={[user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Your full name'}
+                        placeholder={[user?.firstName, user?.lastName].filter(Boolean).join(' ') }
                         autoComplete="name"
                         aria-label="Full Name"
                         onChange={handleonChange}
                         value={formValue.userName}
+                        readOnly
                     />
                 </div>
                 <div className="flex flex-col w-full mb-5">
