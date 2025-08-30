@@ -4,8 +4,10 @@ import { GraphQLClient, gql } from "graphql-request";
 
 const HYGRAPH_CDN_URL = process.env.NEXT_PUBLIC_HYGRAPH_CDN_URL || "https://ap-south-1.cdn.hygraph.com/content/cmeprfwik05nl07usg5gwvtl7/master";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
     const user = await currentUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ");
@@ -32,6 +34,25 @@ export async function GET() {
         }
       }
     `;
+    if (id) {
+      const QUERY_BY_ID = gql`
+        query ById($id: ID!) {
+          bookings(where: { id: $id, bookingStatus: approved }) {
+            contactNumber
+            createdAt
+            dropOffDate
+            dropOffTime
+            id
+            location
+            pickUpDate
+            pickUpTime
+            userName
+          }
+        }
+      `;
+      const data = await readClient.request(QUERY_BY_ID as any, { id });
+      return NextResponse.json(data);
+    }
     const data = await readClient.request(QUERY as any, { names });
     return NextResponse.json(data);
   } catch (error: any) {

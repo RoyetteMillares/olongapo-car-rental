@@ -200,10 +200,14 @@ function Form({ car }: any) {
                 setIsSubmitting(true);
                 const toastId = toast.loading("Creating your booking…");
                 const response = await createBooking({ ...formValue });
+                const createdId = response?.id as string | undefined;
                 toast.success("Booking created successfully", { id: toastId });
                 // Close modal and emit booked car id for list update
                 try { toggleModal(); } catch {}
                 try { useModalStore.getState().setLastBookedCarId(formValue.carId); } catch {}
+                if (createdId) {
+                    try { useModalStore.getState().setLastBookedId(createdId); } catch {}
+                }
             } catch (e: any) {
                 toast.error("Failed to create booking");
             } finally {

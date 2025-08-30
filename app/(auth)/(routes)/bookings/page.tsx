@@ -13,17 +13,20 @@ const fetcher = async (url: string) => {
 
 export default function Page() {
   const { lastBookedCarId, setLastBookedCarId } = useModalStore();
-  const { data, error, isLoading, mutate } = useSWR("/api/bookings/mine", fetcher, {
+  const { lastBookedId, setLastBookedId } = useModalStore();
+  const key = lastBookedId ? `/api/bookings/mine?id=${lastBookedId}` : "/api/bookings/mine";
+  const { data, error, isLoading, mutate } = useSWR(key, fetcher, {
     revalidateOnFocus: true,
     refreshInterval: 5000,
   });
 
   useEffect(() => {
-    if (lastBookedCarId) {
+    if (lastBookedCarId || lastBookedId) {
       mutate();
       setLastBookedCarId(null);
+      if (lastBookedId) setLastBookedId(null);
     }
-  }, [lastBookedCarId, mutate, setLastBookedCarId]);
+  }, [lastBookedCarId, lastBookedId, mutate, setLastBookedCarId, setLastBookedId]);
 
   const bookings = data?.bookings || [];
 
