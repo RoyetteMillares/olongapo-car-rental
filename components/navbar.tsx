@@ -30,6 +30,7 @@ function Navbar() {
                         height={50}
                         alt="Logo"
                         src="/logo-rent.png"
+                        className="rounded-full"
                     />
                 </div>
             </Link>
