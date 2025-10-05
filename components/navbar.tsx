@@ -35,9 +35,16 @@ function Navbar() {
                 </div>
             </Link>
             <div className="hidden md:flex align-center gap-3">
+                <Link href="/">
                 <h2 className="hover:bg-blue-500 cursor-pointer p-2 rounded-full hover:text-white">Home</h2>
+                </Link>
+                
+                <Link href="/about-us">
                 <h2 className="hover:bg-blue-500 cursor-pointer p-2 rounded-full hover:text-white">About Us</h2>
+                </Link>
+                <Link href="/contact-us">
                 <h2 className="hover:bg-blue-500 cursor-pointer p-2 rounded-full hover:text-white">Contact Us</h2>
+                </Link>
             </div>
             <div className="flex items-center gap-x-2">
                 <button className="p-2 bg-blue-500 px-4 rounded-full hover:scale-105 transition-all text-white" onClick={() => useScrollToBottom()}>
